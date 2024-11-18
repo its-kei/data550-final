@@ -1,0 +1,43 @@
+---
+title: "demographics"
+author: "Keita Shimizu"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, download-data, echo = FALSE}
+library(knitr)
+library(RSocrata)
+
+dataset_id <- "hfr9-rurv"
+base_url <- "https://data.cdc.gov"
+
+data <- read.socrata(paste0(base_url, "/api/views/", dataset_id))
+```
+
+```{r, table-one, message = FALSE, warning = FALSE}
+
+library(dplyr)
+library(tidyr)
+library(knitr)
+
+# Filter data for Cognitive Decline and the specific topic
+cognitive_data <- data %>%
+  filter(class == "Cognitive Decline", 
+         topic == "Subjective cognitive decline or memory loss among older adults") %>%
+  select(locationabbr, locationdesc, stratification1, data_value)
+
+# Create a table showing data stratified by Stratification1
+cognitive_table <- cognitive_data %>%
+  group_by(locationabbr, locationdesc, stratification1) %>%
+  summarise(mean_value = mean(as.numeric(data_value), na.rm = TRUE)) %>%
+  arrange(locationabbr)
+
+# Display the table
+kable(cognitive_table, caption = "% of Subjective Cognitive Decline by Age Group and States")
+
+```

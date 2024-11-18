@@ -1,0 +1,28 @@
+---
+title: "figures"
+author: "Keita Shimizu"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, figure-one, message = FALSE, warning = FALSE}
+
+library(ggplot2)
+
+ggplot(cognitive_table, aes(x = locationabbr, y = mean_value, fill = stratification1)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(title = "% of Subjective Cognitive Decline by Age Group and State",
+       x = "States",
+       y = "% Yes",
+       fill = "Age Group") +  
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),  
+        legend.position = "bottom") +  
+  scale_fill_brewer(palette = "Dark2")  
+
+
+```
